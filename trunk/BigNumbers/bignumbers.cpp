@@ -5,305 +5,203 @@
 
 using namespace std;
 
-const int max_digits = 500;
+struct bignum
+{
+	bool neg;
+	string number;
 
-struct bignum {
-        bool neg;
-        char d[max_digits];
-        int size;
+	bignum(long long x = 0) : number("")
+	{
+		neg = x<0;
+		if(neg) x = -x;
+		while(x) {
+			number += char(x%10+'0');
+			x /= 10;
+		}
+	}
+    bignum(const string &s)
+	{
+		for(int i = s.size()-1; i > 0; --i) number += s[i];
+		neg = s[0] == '-';
+		if(!neg) number += s[0];
+	}
 
-        bignum() : neg(false), size(0){ d[0] = 0; }
+	bignum &clean()
+	{
+		int b = number.find_last_not_of("0");
+		number = number.substr(0, b);
+		// zero nao eh negativo
+		if(number.empty()) neg = false;
+        return *this;
+	}
 
-        bignum(const bignum& x, bool sig) : neg(sig), size(x.size)
-        {
-                copy(x.d, x.d+x.size, d);
-        }
-        
-        bignum(long long x) : size(0)
-        {
-                neg = x<0;
-                if (neg) x = -x;
-                while (x) {
-                        d[size++] = x % 10;
-                        x /= 10;
-                }
-        }
-        
-        bignum(const string& s) : neg(false), size(0)
-        {
-                const char *p = s.c_str();
-                if (*p == '-') {
-                        neg = true;
-                        ++p;
-                }
-                while (*p)
-                        d[size++] = *p++ - '0';
-                reverse(d, d+size);
-                clean();
-        }
-        
-        bignum& clean()
-        {
-                int i;
-                for (i=size; i>0; --i)
-                        if (d[i-1])
-                                break;
-                resize(i);
-                if (!size)
-                        neg = false; // zero não é negativo
-                return *this;
-        }
-        
-        bool operator!() const
-        {       
-                return !size;         
-        }
-        operator bool() const 
-        {
-                return size;
-        }
-
-        void resize(int n)
-        {
-                if (n>size)
-                        for (int i=size; i<n; ++i)
-                                d[i] = 0;
-                size = n;
-        }
-
-        char operator[](int i) const
-        {
-                return d[i];
-        }
-
-        char& operator[](int i)
-        {
-                return d[i];
-        }
-        
-        bignum operator-() const
-        {
-                return bignum(*this, !neg).clean();
-        }
-        
-        bignum& operator<<=(int i)
-        {
-                copy_backward(d, d+size, d+size+1);
-                d[0] = 0;
-                size++;
-                return *this;
-        }
+	bool operator!() const { return number.empty(); }
+	operator bool() const { return !number.empty(); }
+	char operator[](int i) const { return number[i]; }
+	char &operator[](int i) { return number[i]; }
+    inline int size() const { return number.size(); }
 };
 
-ostream& operator<<(ostream& o, const bignum& x)
+ostream &operator<<(ostream &o, const bignum &x)
 {
-        if (!x)
-                return o << 0;
-        if (x.neg)
-                o << '-';
-        copy(reverse_iterator<const char*>(x.d + x.size), 
-             reverse_iterator<const char*>(x.d), ostream_iterator<int>(o));
-        return o;
+	if(!x) return o << 0;
+
+	if(x.neg) o << '-';
+	for(int i = x.size()-1; i >=0; --i) o << x.number[i];
+	return o;
 }
-
-bignum& add(bignum& x, const bignum& y)
-{
-        int tam = max(x.size, y.size);
-        x.resize(tam);
-
-        int carry = 0;
-        for (int i=0; i<x.size; ++i) {
-                int s = x[i] + (i<y.size ? y[i] : 0) + carry;
-                x[i] = s % 10;
-                carry = s > 9;
-        }
-        if (carry)
-                x[x.size++] = 1;
-        return x;
-}
-
 
 bool operator<(const bignum& x, const bignum& y)
 {
-        if (x.neg != y.neg)
-                return x.neg;
-                
-        if (x.size != y.size) // magnitudes diferentes        
-                return x.neg == (x.size > y.size);
-
-        for (int i=x.size-1; i>=0; --i)
-                if (x[i] != y[i])
-                        return x.neg != ( x[i]<y[i] );
-        return false;
+	if(x.neg != y.neg) return x.neg;
+	if(x.size() != y.size()) return x.neg == (x.size() > y.size());
+	
+	for(int i = x.size()-1; i >= 0; --i) {
+		if(x[i] != y[i]) {
+			return x.neg != (x[i] < y[i]);
+		}
+	}
+	return false;
 }
 
 bool operator==(const bignum& x, const bignum& y)
 {
-        return x.neg==y.neg && 
-                x.size == y.size &&
-                equal(x.d, x.d+x.size, y.d);
+	return (x.neg == y.neg)&&(x.number == y.number);
 }
 
+// variacoes dos operadores de comparação
+bool operator!=(const bignum &x, const bignum &y) { return !(x == y); }
+bool operator>(const bignum &x, const bignum &y) { return y < x; }
+bool operator<=(const bignum &x, const bignum &y) { return !(y < x); }
+bool operator>=(const bignum &x, const bignum &y) { return !(x < y); }
 
-// necessário só pra valladolid
-bool operator!=(const bignum& x, const bignum& y) { return !(x == y); }
-bool operator>(const bignum& x, const bignum& y) { return y < x; }
-bool operator<=(const bignum& x, const bignum& y) { return !(y < x); }
-bool operator>=(const bignum& x, const bignum& y) { return !(x < y); }
-
-/*
-  #include <utility>
-  using namespace std::rel_ops;
-*/
-
-
-// x -= y, assume que tem sinais iguais
-bignum& sub(bignum& x, const bignum& y)
+// assume que tem sinais iguais
+bignum &add(bignum &x, const bignum &y)
 {
-        bignum z;
-        bool xmaior = x>y;	
+	int tam = max(x.size(), y.size());
+	for(int i = 0; i < tam; ++i) x.number += '0';
 
-        if (xmaior)
-                z = y;
-        else {
-                z = x;
-                x = y;
-        }
-
-        int borrow = 0;
-        for (int i=0; i<x.size; ++i) {
-                int s = x[i] - borrow - (i<z.size ? z[i] : 0);
-                x[i] = (s + 20) % 10;
-                borrow = s < 0;
-        }
-        if (!xmaior)
-                x.neg = !x.neg;
-
-        return x;
+	int carry = 0;
+	for(int i = 0; i < x.size(); ++i) {
+		int s = x[i]-'0' + (i < y.size()? y[i]-'0' : 0) + carry;
+		x[i] = (s%10)+'0';
+        carry = s > 9;
+	}
+	if(carry) x.number += '1';
+	return x;
 }
 
-
-bignum&
-operator+=(bignum& x, const bignum& y)
+// assume que tem sinais iguais
+bignum &sub(bignum &x, const bignum &y)
 {
-        if (!y) return x;       // y é zero
-        if (!x) return x = y;
-        
-        if (x.neg != y.neg)     // sinais diferentes
-                return sub(x, y).clean();
+	bignum z;
 
-        return add(x, y).clean();
+	if(x > y) z = y;
+	else {
+		z = x;
+		x = y;
+		// n eh usado na subtracao
+		x.neg = !x.neg;
+	}
+	
+	int borrow = 0;
+    for(int i = 0; i < x.size(); ++i) {
+		int s = (x[i]-'0') - borrow - ((i < z.size())? (z[i]-'0') : 0);
+		x[i] = ((s + 20)%10) + '0';
+		borrow = s < 0;
+	}
+	return x;
 }
 
-
-
-bignum&
-operator-=(bignum& x, const bignum& y)
+bignum& operator+=(bignum& x, const bignum& y)
 {
-        if (!y) return x;
-        if (!x) return x = -y;
-        
-        if (x.neg != y.neg)     // sinais diferentes
-                return add(x, y).clean();
-        
-        return sub(x, y).clean();
+	if(!y) return x;
+	if(!x) return x = y;
+
+	if(x.neg != y.neg) return sub(x, y).clean();
+	return add(x, y).clean();
 }
 
+bignum& operator-=(bignum& x, const bignum& y)
+{
+	if(!y) return x;
+	if(!x) return x = -y;
 
-
-
-
-
+	if(x.neg != y.neg)  return add(x, y).clean();
+	return sub(x, y).clean();
+}
 
 bignum& operator*=(bignum& x, const bignum& y)
 {
-        bignum r;
-        for (int i=0; i<y.size; ++i) {
-                for (int j=0; j<y[i]; ++j)
-                        add(r, x);
-                x <<= 1;
+	bignum r;
+	for(int i = 0; i < y.size(); ++i) {
+		for(int j = 0; j < y[i]; ++j) {
+			add(r, x);
+            x.number = '1'+x.number;
         }
-
-        r.neg = x.neg != y.neg;
-        x = r;
-        return x.clean();
+	}
+	r.neg = x.neg != y.neg;
+	x = r;
+	return x.clean();
 }
 
-
-
-
+// FAZER
 bignum& operator/=(bignum& x, const bignum& y)
 {
-        bignum temp;
-        temp.resize(x.size);
+	bignum temp;
+	//temp.resize(x.size);
 
-        temp.neg = x.neg != y.neg;
+	temp.neg = x.neg != y.neg;
 
-        bignum row;
-        bignum ty = y;
-        ty.neg = false;
+	bignum row;
+	bignum ty = y;
+	ty.neg = false;
 
-        for (int i=x.size-1; i>=0; --i) {
-                row <<= 1;
-                row[0] = x[i];
-                row.clean();
-                while (ty <= row) {
-                        ++temp[i];
-                        sub(row, ty).clean();
-                }
-        }
-        return (x = temp).clean();
+	for (int i=x.size()-1; i>=0; --i) {
+			//row <<= 1;
+			row[0] = x[i];
+			row.clean();
+			while (ty <= row) {
+					++temp[i];
+					sub(row, ty).clean();
+			}
+	}
+	return (x = temp).clean();
 }
-
 
 bignum operator+(const bignum& a, const bignum& b)
 {
-        bignum c = a;
-        return c += b;
+	bignum c = a;
+	return c += b;
 }
 
 bignum operator-(const bignum& a, const bignum& b)
 {
-        bignum c = a;
-        return c -= b;
+	bignum c = a;
+	return c -= b;
 }
 
 bignum operator*(const bignum& a, const bignum& b)
 {
-        bignum c = a;
-        return c *= b;
+	bignum c = a;
+	return c *= b;
 }
 
 bignum operator/(const bignum& a, const bignum& b)
 {
-        bignum c = a;
-        return c /= b;
+	bignum c = a;
+	return c /= b;
 }
-
-
 
 int main()
 {
-        string a, b;
+	string a, b;
 
-        while (cin >> a >> b) {
-
-                bignum x(a.c_str()),
-                        y(b.c_str());
-
-                cout << "x: " << x << endl;
-                cout << "y: " << y << endl;
-
-/*
-  bignum z = x;
-  z-=y;
-  cout << "z: " << z << endl;
-*/
-
-                cout << "soma: " << x+y << endl;
-                cout << "subt: " << x-y << endl;
-                cout << "mult: " << x*y << endl;
-                if(y) cout << "div:  " << x/y << endl;
-
-        }
+	while(cin >> a >> b) {
+		bignum a1(a), b1(b);
+		cout << "soma: " << a1+b1 << endl;
+		cout << "sub: " << a1-b1 << endl;
+		cout << "mult: " << a1*b1 << endl;
+	}
+	return 0;
 }
