@@ -1,9 +1,3 @@
-#include <iostream>
-#include <vector>
-#include <string>
-
-using namespace std;
-
 /* Similaridade de Strings */
 // Função que pega o minimo
 int min3(int m, int n, int o)
@@ -17,13 +11,9 @@ int similarity(string str1, string str2)
 {
     int size1 = str1.size();
     int size2 = str2.size();
-	vector< vector<int> > matriz(size1+1, size2+1);
-	for(int i = 0; i < size1 + 1; i++) {
-		matriz[i][0] = i;
-	}
-	for(int i = 0; i < size2 + 1; i++) {
-		matriz[0][i] = i;
-	}
+	mati matriz(size1+1, size2+1);
+	for(int i = 0; i < size1 + 1; i++) matriz[i][0] = i;
+	for(int i = 0; i < size2 + 1; i++) matriz[0][i] = i;
 
 	for(int i = 1; i < size1 + 1; i++) {
 		for(int j = 1; j < size2 + 1; j++) {
