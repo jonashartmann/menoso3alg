@@ -5,10 +5,11 @@
 Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
 
 
-= Details =
+= Detalhes =
 
-Adicionar os algoritmos:
-* Fluxo máximo
-* Multiplicação de matrizes
-* Problema da mochila
-* fazer o problema _Is bigger smarter_
+== Adicionar os algoritmos ==
+
+* Fluxo máximo;
+* Multiplicação de matrizes;
+* Problema da mochila;
+* Fazer o problema _Is bigger smarter_;
