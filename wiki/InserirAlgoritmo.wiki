@@ -9,6 +9,7 @@ Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
  * Fluxo máximo;
  * Multiplicação de matrizes;
  * Problema da mochila;
+ * Mais alguns de programação dinâmica (pelamordedeus!);
 
 == Fazer os problemas ==
 
