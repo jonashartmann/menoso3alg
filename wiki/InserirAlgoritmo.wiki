@@ -1,5 +1,3 @@
-#summary One-sentence summary of this page.
-
 = Introdução =
 
 Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
@@ -14,6 +12,6 @@ Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
 
 == Fazer os problemas ==
 
- * Fazer o problema "Is bigger smarter";
- * Fazer o problema "Zak Galou" (soh de raiva);
+ * Fazer o problema "Is bigger smarter" ( [http://icpcres.ecs.baylor.edu/onlinejudge/index.php?option=com_onlinejudge&Itemid=8&category=13&page=show_problem&problem=1072] );
+ * Fazer o problema "Zak Galou" (soh de raiva) ( http://maratona.ime.usp.br/hist/2007/primeira-fase )
  
