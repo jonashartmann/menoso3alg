@@ -11,6 +11,11 @@ Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
  * Ciclo euleriano;
  * Caminhamentos;
  * Pontes;
+ * Fluxo máximo - DIRECIONADO;
+ * Ciclo euleriano - DIRECIONADO;
+ * Caminhamentos - DIRECIONADO;
+ * Pontes - DIRECIONADO;
+ 
 
 === PD ===
  * Multiplicação de matrizes;
