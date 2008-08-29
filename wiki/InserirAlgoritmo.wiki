@@ -4,7 +4,6 @@
 
 Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
 
-
 = Detalhes =
 
 == Adicionar os algoritmos ==
@@ -12,4 +11,9 @@ Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
  * Fluxo máximo;
  * Multiplicação de matrizes;
  * Problema da mochila;
- * Fazer o problema _Is bigger smarter_;
+
+== Fazer os problemas ==
+
+ * Fazer o problema "Is bigger smarter";
+ * Fazer o problema "Zak Galou" (soh de raiva);
+ 
