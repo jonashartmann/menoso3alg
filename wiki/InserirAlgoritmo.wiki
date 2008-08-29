@@ -7,7 +7,7 @@ Aqui serão postados os algoritmos que precisamos providenciar para a maratona.
 
 = Details =
 
-*Inserir os algoritmos*
+Adicionar os algoritmos:
 * Fluxo máximo
 * Multiplicação de matrizes
 * Problema da mochila
