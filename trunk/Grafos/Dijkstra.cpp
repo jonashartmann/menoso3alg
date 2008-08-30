@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <vector>
 
-#define INFINITY 100000000
+#define INF 100000000
 
 using namespace std;
 // Grafo é uma matriz de adjacência
@@ -28,7 +28,7 @@ vector<int> dijkstra(Graph grafo, int orig, int dest)
 		V[i] = true;
 		S[i] = false;
 		pred[i] = -1;
-		if(i != orig) distancias.push_back(INFINITY);
+		if(i != orig) distancias.push_back(INF);
 		else distancias.push_back(0);		
 	}
 	
@@ -45,7 +45,7 @@ vector<int> dijkstra(Graph grafo, int orig, int dest)
    			}
 		}
 		// acha o nodo que tem a menor distancia
-		int menor = INFINITY;
+		int menor = INF;
 		int posmenor = 0;
 		for (int i = 0; i < distancias.size(); i++){
 			if ((distancias[i] < menor) && (V[i])){
@@ -53,7 +53,7 @@ vector<int> dijkstra(Graph grafo, int orig, int dest)
 				posmenor = i;
 			}			
 		}
-		if (menor == INFINITY){	 	   
+		if (menor == INF){	 	   
   		   break;
   		}
 		orig = posmenor;
