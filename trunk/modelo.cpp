@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -23,3 +24,7 @@ typedef vector<vs> mats;
 typedef long long int64;
 typedef unsigned long long uint64;
 
+int main()
+{
+	return 0;
+}
